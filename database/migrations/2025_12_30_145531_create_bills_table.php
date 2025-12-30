@@ -13,14 +13,21 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->foreignId('user_id')
+          ->constrained()
+          ->cascadeOnDelete();
+
+    $table->foreignId('card_id')
+          ->constrained()
+          ->cascadeOnDelete();
+            
             $table->string('title', 30);
-            $table->string('description', 50);
-            $table->float('value', 2);
-            $table->integer('number_installment');
+            $table->string('description', 50)->nullable();
+            $table->decimal('value', 10,2);
+            $table->integer('number_installment')->nullable();
             $table->enum('payment_method', ['Credit_Card', 'Debit_Card', 'Pix']);
-            $table->enum('status', ['Open', 'Partial_Paid', 'Paid']);
-            $table->string('responsible', 30);
+            $table->string('responsible', 30)->nullable();
+            $table->enum('status', ['Open', 'Partial_Paid', 'Paid'])->default('Open');
             $table->timestamps();
         });
     }

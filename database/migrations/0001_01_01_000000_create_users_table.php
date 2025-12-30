@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Ramsey\Uuid\Type\Integer;
 
 return new class extends Migration
 {
@@ -15,9 +16,10 @@ return new class extends Migration
             $table->id();
             $table->string('email', 80)->unique();
             $table->string('name', 20);
-            $table->string('password', 20);
-            $table->string('profile_picture', 45);
-            $table->string('cards_id');
+            $table->string('password');
+            $table->string('profile_picture', 45)->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
 
