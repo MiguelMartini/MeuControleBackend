@@ -1,11 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function (Request $request) {
-    return response()->json([
-        'status'=> "Success",
-        'message' => "Funcionou"
-    ]);
-});
+Route::post('/register', [AuthController::class, 'register']);
