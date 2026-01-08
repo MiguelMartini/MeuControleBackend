@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -37,5 +38,39 @@ class AuthController extends Controller
             'status' => 'Sucesso',
             'message' => 'Usuário registrado com sucesso!'
          ], 201);
+    }
+
+    public function login (Request $request){ 
+      $validator = Validator::make($request->all(), [
+         'email' => 'required',
+         'password' => 'required'
+      ]);
+
+      if($validator->fails()){
+         return response()->json([
+            'status' => 'Falha',
+            'message' => $validator->erros()
+         ], 400);
+      }
+
+      if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+         $user = Auth::user();
+         $user->tokens()->delete();
+
+         $response['token'] = $user->createToken('userToken')->plainTextToken;
+         $response['email'] = $user->email;
+
+         return response()->json([
+            'status' => 'Sucesso',
+            'message' => 'Usuário autenticado com sucesso!',
+            'data' => $response
+         ],200);
+      }else{
+         return response()->json([
+
+            'status' => 'Falha',
+            'message' => 'Falha ao autenticar o usuário'
+         ],400);
+      }
     }
 }
