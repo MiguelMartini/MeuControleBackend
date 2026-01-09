@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Auth;
@@ -79,6 +80,27 @@ class UserController extends Controller
     }
     public function destroy(string $id)
     {
-        //
+         $user = User::find($id);
+
+        if(!$user){
+            return response()->json([
+                'status' => 'Falha',
+                'message' => 'Usuário não encontrado'
+            ],400);
+        }
+
+        if((int) $user->id !== (int) $id){
+            return response()->json([
+                'status' => 'Falha',
+                'message' => 'Sem permissão para esta operação'
+            ], 201);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'status' => 'Sucesso',
+            'message' => 'Usuário deletado com sucesso!'
+        ], 204);
     }
 }
