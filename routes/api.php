@@ -17,4 +17,5 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::get('/cards', [CardController::class, 'index'])->name('card.index');
     Route::get('/card/{id}', [CardController::class, 'show'])->name('card.show');
     Route::post('/cards/store', [CardController::class, 'store'])->name('card.store');
+    Route::delete('/delete/card/{id}', [CardController::class, 'destroy'])->name('card.destroy');
 });

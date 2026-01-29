@@ -118,8 +118,29 @@ class CardController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        //
+       $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'Falha',
+                'message' => 'Erro ao buscar usuário'
+            ], 404);
+        }
+
+        try{
+            $this->cardService->deleteCard($id, $user->id);
+
+            return response()->json([
+                'status' => 'Sucesso',
+                'message' => 'Cartão excluído com sucesso'
+            ], 200);
+        }catch (ModelNotFoundException  $e) {
+            return response()->json([
+                'status' => 'Falha',
+                'message' => 'Cartão não encontrado'
+            ], 404);
+        }
     }
 }
