@@ -51,4 +51,30 @@ class CardService
         $card = Card::where('id', $card_id)->where('user_id', $user_id)->firstOrFail();
         $card->delete();
     }
+
+    public function updateCard(int $card_id, Request $request)
+    {
+        $validator = Validator::make($request->only(['tilte', 'description', 'card_type']), [
+            'title' => 'sometimes|string|max:30',
+            'description' => 'sometimes|nullable|string|max:50',
+            'card_type' => 'sometimes|nullable|in:Debit,Credit'
+        ], [
+            '*.required' => 'O campo :attribute é obrigatório',
+            '*.max' => 'O campo :attribute deve possuir no máximo :max caractéres',
+            '*.in' => 'Apenas os seguintes valores são válidos: :values'
+        ], [
+            'title' => 'Título',
+            'description' => 'Descrição',
+            'card_type' => 'Tipo do cartão'
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
+        $card = Card::findOrFail($card_id);
+        $card->update($validator->validated());
+
+        return $card;
+    }
 }
