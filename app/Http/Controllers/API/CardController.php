@@ -99,20 +99,31 @@ class CardController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, int $id)
     {
-        //
-    }
+         $user = Auth::user();
+        
+        if (!$user) {
+            return response()->json([
+                'status' => 'Falha',
+                'message' => 'Usuário não encontrado'
+            ], 400);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+        try{
+            $card = $this->cardService->updateCard($id, $request);
+
+            return response()->json([
+                'status' => 'Sucesso',
+                'message' => 'Cartão atualizado com sucesso',
+                'data' => $card
+            ], 200);
+        }catch(ModelNotFoundException $e){
+            return response()->json([
+                'status' => 'Falha',
+                'message' => 'Cartão não encontrado'
+            ], 404);
+        }
     }
 
     /**
