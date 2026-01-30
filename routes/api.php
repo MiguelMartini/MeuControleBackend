@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\BillController;
 use App\Http\Controllers\API\CardController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\Auth\AuthController;
@@ -19,4 +20,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('/cards/store', [CardController::class, 'store'])->name('card.store');
     Route::delete('/delete/card/{id}', [CardController::class, 'destroy'])->name('card.destroy');
     Route::patch('/update/card/{id}', [CardController::class, 'update'])->name('card.update');
+
+
+    Route::get('/bills', [BillController::class, 'index'])->name('bill.index');
 });
