@@ -11,6 +11,12 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
+Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
+    return $request->user();
+});
+
+
+
 Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::patch('/update', [UserController::class, 'update']);
     Route::delete('/delete/{id}', [UserController::class, 'destroy']);
@@ -23,4 +29,6 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 
 
     Route::get('/bills', [BillController::class, 'index'])->name('bill.index');
+
+    Route::post('/bill', [BillController::class, 'store']) ->name('bill.store');
 });

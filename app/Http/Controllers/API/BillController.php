@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\BillService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class BillController extends Controller
 {
@@ -40,20 +41,32 @@ class BillController extends Controller
         ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $user = Auth::user();
+        
+        if(!$user) {
+            return response()-> json([
+                'status' => 'Falha', 
+                'message' => 'Usuário não encontrado ou não registrado'
+            ], 404);
+        }
+
+        try{
+            $bill = $this->billService->storeBill($user, $request);
+
+            return response()->json([
+                'status' => 'Sucesso',
+                'message' => 'Conta registrada com sucesso!',
+                'data' => $bill
+            ], 201);
+        }catch(ValidationException $e){
+            return response()->json([
+                'status' => 'Falha',
+                'message' => 'Não foi possível registrar sua conta no momento, tente novamente mais tarde',
+                'data' => $e->errors()
+            ], 422);
+        }
     }
 
     /**
